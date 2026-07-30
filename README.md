@@ -32,7 +32,6 @@ O objetivo é facilitar o acompanhamento de projetos sociais, oficinas, capacita
 
 ## 📸 Dashboard
 
-*(Adicione aqui uma imagem ou GIF da aplicação)*
 
 ```text
 Resumo do encontro
@@ -237,7 +236,7 @@ GitHub:
 https://github.com/Hercls
 
 LinkedIn:
-*(adicione seu LinkedIn aqui)*
+linkedin.com/in/hércules-nascimento-802a9017a
 
 ---
 
