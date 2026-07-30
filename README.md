@@ -1,3 +1,9 @@
+Repositório: dashboard-hub
+
+Produto:
+DataImpactHub
+
+
 # 📊 Dashboard Hub
 
 Uma plataforma web para gestão, monitoramento e visualização de dados de encontros, participantes e ações de impacto social.
