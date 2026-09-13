@@ -1,32 +1,28 @@
-import CardPerfilCategorias from "./CardPerfilCategorias";
-import { agruparCategorias } from "../../utils/agruparCategorias";
+import GraficoBarrasPerfil from "./GraficoBarrasPerfil";
 
-function AreaProfissional({ dados }) {
-  const opcoesAreaProfissional = [
-    "Tecnologia",
-    "Educação",
-    "Saúde",
-    "Meio Ambiente",
-    "Direito",
-    "Engenharia",
-    "Comunicação",
-    "Gestão Pública",
-    "Empreendedorismo",
-    "Estudante",
-    "Outro",
-  ];
+const ORDEM_AREA = [
+  "Tecnologia",
+  "Educação",
+  "Saúde",
+  "Meio Ambiente",
+  "Direito",
+  "Engenharia",
+  "Comunicação",
+  "Gestão Pública",
+  "Empreendedorismo",
+  "Estudante",
+  "Outro",
+];
 
-  const categorias = agruparCategorias(
-    dados,
-    "area_trabalho",
-    opcoesAreaProfissional
-  );
-
+function AreaProfissional({
+  dados,
+}) {
   return (
-    <CardPerfilCategorias
+    <GraficoBarrasPerfil
       titulo="Área profissional"
-      categorias={categorias}
-      tipoGrafico="barras"
+      dados={dados}
+      campo="area_trabalho"
+      ordem={ORDEM_AREA}
     />
   );
 }

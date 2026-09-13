@@ -1,30 +1,26 @@
-import CardPerfilCategorias from "./CardPerfilCategorias";
-import { agruparCategorias } from "../../utils/agruparCategorias";
+import GraficoBarrasPerfil from "./GraficoBarrasPerfil";
+
+const ORDEM_ESCOLARIDADE = [
+  "Ensino Fundamental",
+  "Ensino Médio",
+  "Ensino Técnico",
+  "Ensino Superior incompleto",
+  "Ensino Superior completo",
+  "Especialização",
+  "Mestrado",
+  "Doutorado",
+  "Prefiro não responder",
+];
 
 function Escolaridade({ dados }) {
-  const opcoesEscolaridade = [
-    "Ensino Fundamental",
-    "Ensino Médio",
-    "Ensino Técnico",
-    "Ensino Superior incompleto",
-    "Ensino Superior completo",
-    "Especialização",
-    "Mestrado",
-    "Doutorado",
-    "Prefiro não responder",
-  ];
-
-  const categorias = agruparCategorias(
-    dados,
-    "escolaridade",
-    opcoesEscolaridade
-  );
-
   return (
-    <CardPerfilCategorias
+    <GraficoBarrasPerfil
       titulo="Escolaridade"
-      categorias={categorias}
-      tipoGrafico="barras"
+      dados={dados}
+      campo="escolaridade"
+      ordem={
+        ORDEM_ESCOLARIDADE
+      }
     />
   );
 }

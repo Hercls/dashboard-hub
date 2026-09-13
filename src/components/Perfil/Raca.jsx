@@ -1,27 +1,21 @@
-import CardPerfilCategorias from "./CardPerfilCategorias";
-import { agruparCategorias } from "../../utils/agruparCategorias";
+import GraficoDonutPerfil from "./GraficoDonutPerfil";
+
+const ORDEM_RACA = [
+  "Branca",
+  "Preta",
+  "Parda",
+  "Amarela",
+  "Indígena",
+  "Prefiro não responder",
+];
 
 function Raca({ dados }) {
-  const opcoesRaca = [
-    "Branca",
-    "Preta",
-    "Parda",
-    "Amarela",
-    "Indígena",
-    "Prefiro não responder",
-  ];
-
-  const categorias = agruparCategorias(
-    dados,
-    "raca",
-    opcoesRaca
-  );
-
   return (
-    <CardPerfilCategorias
+    <GraficoDonutPerfil
       titulo="Raça/Cor"
-      categorias={categorias}
-      tipoGrafico="pizza"
+      dados={dados}
+      campo="raca"
+      ordem={ORDEM_RACA}
     />
   );
 }

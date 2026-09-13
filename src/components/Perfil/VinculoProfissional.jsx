@@ -1,30 +1,26 @@
-import CardPerfilCategorias from "./CardPerfilCategorias";
-import { agruparCategorias } from "../../utils/agruparCategorias";
+import GraficoBarrasPerfil from "./GraficoBarrasPerfil";
 
-function VinculoProfissional({ dados }) {
-  const opcoesVinculo = [
-    "Empregado(a)",
-    "Servidor(a) público(a)",
-    "Empresário(a)",
-    "Autônomo(a)",
-    "Freelancer",
-    "Pesquisador(a)",
-    "Estudante",
-    "Desempregado(a)",
-    "Outro",
-  ];
+const ORDEM_VINCULO = [
+  "Empregado(a)",
+  "Servidor(a) público(a)",
+  "Empresário(a)",
+  "Autônomo(a)",
+  "Freelancer",
+  "Pesquisador(a)",
+  "Estudante",
+  "Desempregado(a)",
+  "Outro",
+];
 
-  const categorias = agruparCategorias(
-    dados,
-    "vinculo_profissional",
-    opcoesVinculo
-  );
-
+function VinculoProfissional({
+  dados,
+}) {
   return (
-    <CardPerfilCategorias
+    <GraficoBarrasPerfil
       titulo="Vínculo profissional"
-      categorias={categorias}
-      tipoGrafico="barras"
+      dados={dados}
+      campo="vinculo_profissional"
+      ordem={ORDEM_VINCULO}
     />
   );
 }

@@ -1,35 +1,45 @@
+import {
+  Bike,
+  BusFront,
+  Car,
+  CarTaxiFront,
+  CircleEllipsis,
+  Route,
+  TrainFront,
+} from "lucide-react";
+
 const opcoesTransporte = [
   {
     nome: "Ônibus",
-    icone: "🚌",
+    Icone: BusFront,
   },
   {
     nome: "Metrô/VLT",
-    icone: "🚇",
+    Icone: TrainFront,
   },
   {
     nome: "Carro (particular)",
-    icone: "🚗",
+    Icone: Car,
   },
   {
     nome: "Moto (particular)",
-    icone: "🏍️",
+    Icone: Route,
   },
   {
     nome: "Bicicleta",
-    icone: "🚲",
+    Icone: Bike,
   },
   {
     nome: "Carro (aplicativo)",
-    icone: "🚙",
+    Icone: CarTaxiFront,
   },
   {
     nome: "Moto (aplicativo)",
-    icone: "🛵",
+    Icone: Route,
   },
   {
     nome: "Outro",
-    icone: "🚐",
+    Icone: CircleEllipsis,
   },
 ];
 
@@ -56,7 +66,7 @@ function normalizarTransporte(resposta) {
   return "Outro";
 }
 
-function Transporte({ dados }) {
+function Transporte({ dados = [] }) {
   const totalParticipantes = dados.length;
 
   const ranking = opcoesTransporte
@@ -83,74 +93,151 @@ function Transporte({ dados }) {
     .filter((opcao) => opcao.quantidade > 0)
     .sort((a, b) => b.quantidade - a.quantidade);
 
-  return (
-    <article className="card card-transporte">
-      <div className="cabecalho-card-transporte">
-        <div>
-          <h2>Meio de transporte utilizado</h2>
+  const maiorQuantidade =
+    ranking.length > 0 ? ranking[0].quantidade : 0;
 
-          <p>
-            Transporte utilizado pelos participantes para chegar
-            ao encontro
-          </p>
+  const transportesMaisUtilizados = ranking.filter(
+    (transporte) =>
+      transporte.quantidade === maiorQuantidade
+  );
+
+  const existeEmpate =
+    transportesMaisUtilizados.length > 1;
+
+  const resumoPrincipal =
+    transportesMaisUtilizados
+      .map((transporte) => transporte.nome)
+      .join(", ");
+
+  const percentualPrincipal =
+    ranking.length > 0 ? ranking[0].porcentagem : 0;
+
+  return (
+    <article className="card-transporte">
+      <header className="cabecalho-card-transporte">
+        <div className="titulo-card-transporte">
+          <span className="icone-titulo-transporte">
+            <BusFront size={23} />
+          </span>
+
+          <div>
+            <h2>Transporte utilizado</h2>
+
+            <p>
+              Meio de deslocamento usado pelos participantes para
+              chegar ao encontro.
+            </p>
+          </div>
         </div>
 
         <span className="total-respostas-transporte">
-          {totalParticipantes} respostas
+          {totalParticipantes}{" "}
+          {totalParticipantes === 1
+            ? "resposta"
+            : "respostas"}
         </span>
-      </div>
+      </header>
 
       {ranking.length === 0 ? (
         <div className="transporte-sem-dados">
-          Nenhuma informação de transporte disponível.
+          <BusFront size={32} />
+
+          <strong>Nenhum transporte informado</strong>
+
+          <span>
+            Os meios de deslocamento aparecerão aqui.
+          </span>
         </div>
       ) : (
-        <div className="ranking-transporte">
-          {ranking.map((transporte, index) => (
-            <div
-              className="item-ranking-transporte"
-              key={transporte.nome}
-            >
-              <div className="posicao-transporte">
-                {index + 1}º
-              </div>
+        <>
+          <div className="resumo-principal-transporte">
+            <span className="icone-resumo-transporte">
+              <Route size={21} />
+            </span>
 
-              <div className="icone-transporte" aria-hidden="true">
-                {transporte.icone}
-              </div>
+            <div>
+              <span className="rotulo-resumo-transporte">
+                {existeEmpate
+                  ? "Meios mais utilizados"
+                  : "Meio mais utilizado"}
+              </span>
 
-              <div className="informacoes-transporte">
-                <div className="linha-superior-transporte">
-                  <span className="nome-transporte">
-                    {transporte.nome}
-                  </span>
-
-                  <span className="resultado-transporte">
-                    <strong>
-                      {transporte.porcentagem.toFixed(0)}%
-                    </strong>
-
-                    <small>
-                      {transporte.quantidade}{" "}
-                      {transporte.quantidade === 1
-                        ? "pessoa"
-                        : "pessoas"}
-                    </small>
-                  </span>
-                </div>
-
-                <div className="trilha-transporte">
-                  <div
-                    className="barra-transporte"
-                    style={{
-                      width: `${transporte.porcentagem}%`,
-                    }}
-                  />
-                </div>
-              </div>
+              <strong>{resumoPrincipal}</strong>
             </div>
-          ))}
-        </div>
+
+            <span className="percentual-resumo-transporte">
+              {percentualPrincipal.toFixed(0)}%
+            </span>
+          </div>
+
+          <div className="ranking-transporte">
+            {ranking.map(
+              (
+                {
+                  nome,
+                  quantidade,
+                  porcentagem,
+                  Icone,
+                },
+                index
+              ) => (
+                <div
+                  className="item-ranking-transporte"
+                  key={nome}
+                >
+                  <span
+                    className={`posicao-transporte posicao-${
+                      index + 1
+                    }`}
+                  >
+                    {index + 1}º
+                  </span>
+
+                  <span className="icone-transporte">
+                    <Icone size={23} />
+                  </span>
+
+                  <div className="informacoes-transporte">
+                    <div className="linha-superior-transporte">
+                      <span className="nome-transporte">
+                        {nome}
+                      </span>
+
+                      <strong className="resultado-transporte">
+                        {quantidade}{" "}
+                        {quantidade === 1
+                          ? "pessoa"
+                          : "pessoas"}
+
+                        <span>•</span>
+
+                        {porcentagem.toFixed(0)}%
+                      </strong>
+                    </div>
+
+                    <div
+                      className="trilha-transporte"
+                      role="progressbar"
+                      aria-label={`${nome}: ${porcentagem.toFixed(
+                        0
+                      )}%`}
+                      aria-valuenow={porcentagem}
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      <div
+                        className="barra-transporte"
+                        style={{
+                          width: `${porcentagem}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </>
       )}
     </article>
   );

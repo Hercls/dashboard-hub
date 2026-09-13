@@ -5,7 +5,7 @@ function ListaParticipantes({ dados }) {
 
       <ul className="lista-participantes">
         {dados.map((participante) => (
-          <li key={participante.email}>
+          <li key={participante.id}>
             <span className="circulo-participante"></span>
             {participante.nome}
           </li>

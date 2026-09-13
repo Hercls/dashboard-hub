@@ -1,27 +1,22 @@
-import CardPerfilCategorias from "./CardPerfilCategorias";
-import { agruparCategorias } from "../../utils/agruparCategorias";
+import GraficoDonutPerfil from "./GraficoDonutPerfil";
+
+const ORDEM_GENERO = [
+  "Mulher",
+  "Homem",
+  "Mulher trans",
+  "Homem trans",
+  "Pessoa não binária",
+  "Prefiro me autodescrever",
+  "Prefiro não responder",
+];
 
 function Genero({ dados }) {
-  const opcoesGenero = [
-    "Mulher",
-    "Homem",
-    "Mulher trans",
-    "Homem trans",
-    "Pessoa não binária",
-    "Prefiro não responder",
-  ];
-
-  const categorias = agruparCategorias(
-    dados,
-    "genero",
-    opcoesGenero
-  );
-
   return (
-    <CardPerfilCategorias
+    <GraficoDonutPerfil
       titulo="Gênero"
-      categorias={categorias}
-      tipoGrafico="pizza"
+      dados={dados}
+      campo="genero"
+      ordem={ORDEM_GENERO}
     />
   );
 }

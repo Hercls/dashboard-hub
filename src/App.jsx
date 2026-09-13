@@ -1,7 +1,12 @@
+import { useEffect, useState } from "react";
+
 import "./App.css";
 
+import Login from "./components/Login";
+import UsuarioMenu from "./components/UsuarioMenu";
 import ListaParticipantes from "./components/ListaParticipantes";
 import NumeroParticipantes from "./components/NumeroParticipantes";
+import SeletorEncontro from "./components/SeletorEncontro";
 
 import Genero from "./components/Perfil/Genero";
 import Raca from "./components/Perfil/Raca";
@@ -17,236 +22,694 @@ import Bairros from "./components/Encontro/Bairros";
 import Gastos from "./components/Encontro/Gastos";
 import Evidencias from "./components/Encontro/Evidencias";
 
+import Participar from "./pages/Participar";
+import Admin from "./pages/Admin";
+import GerenciarEncontro from "./pages/GerenciarEncontro";
 
-const evidenciasDoEncontro = [
-  {
-    id: 1,
-    tipo: "foto",
-    titulo: "Registro fotográfico",
-    descricao: "Fotografias realizadas durante o encontro.",
-    url: "https://exemplo.com/fotos",
-  },
-  {
-    id: 2,
-    tipo: "documento",
-    titulo: "Lista de presença",
-    descricao: "Documento com o registro dos participantes.",
-    url: "https://exemplo.com/lista-presenca.pdf",
-  },
-  {
-    id: 3,
-    tipo: "apresentacao",
-    titulo: "Apresentação do encontro",
-    descricao: "Slides utilizados durante a atividade.",
-    url: "https://exemplo.com/apresentacao",
-  },
-  {
-    id: 4,
-    tipo: "link",
-    titulo: "Publicação nas redes sociais",
-    descricao: "Postagem sobre os resultados do encontro.",
-    url: "https://exemplo.com/publicacao",
-  },
-];
+import {
+  buscarEncontros,
+  buscarParticipantes,
+  buscarEvidencias,
+  buscarUsuarioHub,
+} from "./services/dados";
+
+import { authClient } from "./lib/neon";
 
 function App() {
-  const participantes = [
-    {
-      id: 1,
-      data_encontro: "25/07/2026",
-      nome: "Ana Fabian",
-      email: "ana@email.com",
-      genero: "Mulher",
-      raca: "Parda",
-      faixa_etaria: "25–34",
-      escolaridade: "Ensino Superior completo",
-      renda: "De 2 a 5 salários mínimos",
-      deficiente: "Não",
-      deficiencia: "",
-      area_trabalho: "Comunicação",
-      vinculo_profissional: "Autônomo(a)",
-      bairro: "Benfica",
-      transporte_usado: "Ônibus",
-      gasto_alimentacao: 25,
-      gasto_transporte: 12,
-      gasto_material: 0,
-      foto: "",
-    },
-    {
-      id: 1,
-      data_encontro: "25/07/2026",
-      nome: "Hércules Nascimento",
-      email: "hercules@email.com",
-      genero: "Homem",
-      raca: "Parda",
-      faixa_etaria: "25–34",
-      escolaridade: "Ensino Superior completo",
-      renda: "De 2 a 5 salários mínimos",
-      deficiente: "Não",
-      deficiencia: "",
-      area_trabalho: "Meio Ambiente",
-      vinculo_profissional: "Empregado(a)",
-      bairro: "José Bonifácio",
-      transporte_usado: "Bicicleta",
-      gasto_alimentacao: 30,
-      gasto_transporte: 0,
-      gasto_material: 10,
-      foto: "",
-    },
-    {
-      id: 1,
-      data_encontro: "25/07/2026",
-      nome: "Marina Oliveira",
-      email: "marina@email.com",
-      genero: "Mulher",
-      raca: "Branca",
-      faixa_etaria: "25–34",
-      escolaridade: "Especialização",
-      renda: "De 5 a 10 salários mínimos",
-      deficiente: "Não",
-      deficiencia: "",
-      area_trabalho: "Comunicação",
-      vinculo_profissional: "Freelancer",
-      bairro: "Aldeota",
-      transporte_usado: "Carro (particular)",
-      gasto_alimentacao: 28,
-      gasto_transporte: 22,
-      gasto_material: 5,
-      foto: "",
-    },
-    {
-      id: 1,
-      data_encontro: "25/07/2026",
-      nome: "Lucas Almeida",
-      email: "lucas@email.com",
-      genero: "Homem trans",
-      raca: "Preta",
-      faixa_etaria: "18–24",
-      escolaridade: "Ensino Superior incompleto",
-      renda: "De 1 a 2 salários mínimos",
-      deficiente: "Sim",
-      deficiencia: "Visual",
-      area_trabalho: "Tecnologia",
-      vinculo_profissional: "Estudante",
-      bairro: "Parangaba",
-      transporte_usado: "Carro (aplicativo)",
-      gasto_alimentacao: 20,
-      gasto_transporte: 10,
-      gasto_material: 0,
-      foto: "",
-    },
-    {
-      id: 1,
-      data_encontro: "25/07/2026",
-      nome: "Carla Sousa",
-      email: "carla@email.com",
-      genero: "Pessoa não binária",
-      raca: "Indígena",
-      faixa_etaria: "35–44",
-      escolaridade: "Mestrado",
-      renda: "Prefiro não responder",
-      deficiente: "Sim",
-      deficiencia: "Física; Auditiva",
-      area_trabalho: "Educação",
-      vinculo_profissional: "Pesquisador(a)",
-      bairro: "Parangaba",
-      transporte_usado: "Moto (aplicativo)",
-      gasto_alimentacao: 35,
-      gasto_transporte: 18,
-      gasto_material: 12,
-      foto: "",
-    },
-    {
-      id: 2,
-      data_encontro: "30/08/2026",
-      nome: "Participante de outro encontro",
-      email: "outro@email.com",
-      genero: "Homem",
-      raca: "Branca",
-      faixa_etaria: "35–44",
-      escolaridade: "Ensino Superior completo",
-      renda: "De 5 a 10 salários mínimos",
-      deficiente: "Não",
-      deficiencia: "",
-      area_trabalho: "Engenharia",
-      vinculo_profissional: "Empresário(a)",
-      bairro: "Parangaba",
-      transporte_usado: "Outro: fui a pé",
-      gasto_alimentacao: 40,
-      gasto_transporte: 25,
-      gasto_material: 10,
-      foto: "",
-    },
-  ];
+  // ===========================
+  // AUTENTICAÇÃO
+  // ===========================
 
-  const idEncontroSelecionado = 1;
+  const [sessao, setSessao] = useState(null);
+  const [usuario, setUsuario] = useState(null);
+  const [usuarioHub, setUsuarioHub] = useState(null);
 
-  const dadosDoEncontro = participantes.filter(
-    (participante) =>
-      participante.id === idEncontroSelecionado
-  );
+  const [verificandoSessao, setVerificandoSessao] =
+    useState(true);
+
+  // ===========================
+  // DADOS
+  // ===========================
+
+  const [encontros, setEncontros] = useState([]);
+  const [participantes, setParticipantes] = useState([]);
+  const [evidencias, setEvidencias] = useState([]);
+
+  const [
+    idEncontroSelecionado,
+    setIdEncontroSelecionado,
+  ] = useState(null);
+
+  const [carregando, setCarregando] =
+    useState(true);
+
+  const [erro, setErro] =
+    useState("");
+
+  // ===========================
+  // PÁGINAS
+  // ===========================
+
+  const paginaParticipar =
+    window.location.pathname === "/participar";
+
+  const paginaAdmin =
+    window.location.pathname === "/admin";
+
+  // ===========================
+  // VERIFICAR SESSÃO
+  // ===========================
+
+  useEffect(() => {
+    async function verificarSessao() {
+      try {
+        const { data } =
+          await authClient.getSession();
+
+        setSessao(
+          data?.session ?? null
+        );
+
+        setUsuario(
+          data?.user ?? null
+        );
+      } catch (erroSessao) {
+        console.error(
+          "Erro ao verificar sessão:",
+          erroSessao
+        );
+
+        setSessao(null);
+        setUsuario(null);
+      } finally {
+        setVerificandoSessao(false);
+      }
+    }
+
+    verificarSessao();
+  }, []);
+
+  // ===========================
+  // LOGOUT
+  // ===========================
+
+  async function fazerLogout() {
+    try {
+      await authClient.signOut();
+
+      setSessao(null);
+      setUsuario(null);
+      setUsuarioHub(null);
+
+      setEncontros([]);
+      setParticipantes([]);
+      setEvidencias([]);
+
+      setIdEncontroSelecionado(null);
+
+      window.location.href = "/";
+    } catch (erroLogout) {
+      console.error(
+        "Erro ao sair:",
+        erroLogout
+      );
+    }
+  }
+
+  // ===========================
+  // CARREGAR DADOS
+  // ===========================
+
+  async function carregarDados() {
+    try {
+      setCarregando(true);
+      setErro("");
+
+      const [
+        encontrosCarregados,
+        participantesCarregados,
+        evidenciasCarregadas,
+        usuarioHubCarregado,
+      ] = await Promise.all([
+        buscarEncontros(),
+        buscarParticipantes(),
+        buscarEvidencias(),
+        buscarUsuarioHub(),
+      ]);
+
+      setEncontros(
+        encontrosCarregados
+      );
+
+      setParticipantes(
+        participantesCarregados
+      );
+
+      setEvidencias(
+        evidenciasCarregadas
+      );
+
+      setUsuarioHub(
+        usuarioHubCarregado
+      );
+
+      setIdEncontroSelecionado(
+        (idAtual) => {
+          if (idAtual !== null) {
+            const encontroAindaExiste =
+              encontrosCarregados.some(
+                (encontro) =>
+                  encontro.id === idAtual
+              );
+
+            if (encontroAindaExiste) {
+              return idAtual;
+            }
+          }
+
+          return (
+            encontrosCarregados[0]?.id ??
+            null
+          );
+        }
+      );
+    } catch (erroCarregamento) {
+      console.error(
+        "Erro ao carregar dados:",
+        erroCarregamento
+      );
+
+      setErro(
+        "Não foi possível carregar os dados do dashboard."
+      );
+    } finally {
+      setCarregando(false);
+    }
+  }
+
+  // ===========================
+  // CARREGAR APÓS LOGIN
+  // ===========================
+
+  useEffect(() => {
+    if (!sessao) {
+      return;
+    }
+
+    carregarDados();
+  }, [sessao]);
+
+  // ===========================
+  // FORMULÁRIO PÚBLICO
+  // ===========================
+
+  if (paginaParticipar) {
+    return <Participar />;
+  }
+
+  // ===========================
+  // VERIFICANDO SESSÃO
+  // ===========================
+
+  if (verificandoSessao) {
+    return (
+      <main className="estado-pagina">
+        <div className="estado-carregamento">
+          <span className="spinner" />
+
+          <strong>
+            Verificando acesso
+          </strong>
+
+          <p>
+            Aguarde enquanto verificamos
+            sua sessão.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // ===========================
+  // LOGIN
+  // ===========================
+
+  if (!sessao) {
+    return <Login />;
+  }
+
+  // ===========================
+  // CARREGAMENTO
+  // ===========================
+
+  if (carregando) {
+    return (
+      <main className="estado-pagina">
+        <div className="estado-carregamento">
+          <span className="spinner" />
+
+          <strong>
+            Carregando dashboard
+          </strong>
+
+          <p>
+            Aguarde enquanto buscamos
+            os dados dos encontros.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // ===========================
+  // ERRO
+  // ===========================
+
+  if (erro) {
+    return (
+      <main className="estado-pagina">
+        <div className="estado-erro">
+          <strong>
+            Não foi possível carregar
+            os dados
+          </strong>
+
+          <p>
+            {erro}
+          </p>
+
+          <button
+            type="button"
+            onClick={carregarDados}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  // ===========================
+  // PERFIL / PERMISSÃO
+  // ===========================
+
+  const usuarioEhAdmin =
+    usuarioHub &&
+    usuarioHub.ativo === true &&
+    usuarioHub.perfil === "admin";
+
+  // ===========================
+  // BARRA SUPERIOR
+  // ===========================
+
+  function BarraSuperior() {
+    return (
+      <header className="barra-superior-dashboard">
+
+        <button
+          className="marca-dashboard"
+          type="button"
+          onClick={() => {
+            window.location.href = "/";
+          }}
+        >
+          <span className="marca-dashboard-simbolo">
+              <img
+                className="logo-global-shapers"
+                src="/global-shapers-logo.png"
+                alt="Global Shapers"
+              />
+          </span>
+
+          <span>
+            <strong>
+              Hub Fortaleza
+            </strong>
+
+            <small>
+              Impact Dashboard
+            </small>
+          </span>
+        </button>
+
+        <UsuarioMenu
+          usuario={usuario}
+          usuarioEhAdmin={usuarioEhAdmin}
+          aoSair={fazerLogout}
+        />
+
+      </header>
+    );
+  }
+
+  // ===========================
+  // ÁREA ADMINISTRATIVA
+  // ===========================
+
+  if (paginaAdmin) {
+    if (!usuarioEhAdmin) {
+      return (
+        <>
+          <BarraSuperior />
+
+          <main className="estado-pagina">
+            <div className="estado-erro">
+              <strong>
+                Acesso não autorizado
+              </strong>
+
+              <p>
+                Sua conta não possui
+                permissão para acessar
+                a área administrativa.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href =
+                    "/";
+                }}
+              >
+                Voltar ao dashboard
+              </button>
+            </div>
+          </main>
+        </>
+      );
+    }
+
+    // ===========================
+    // GERENCIAR ENCONTRO
+    // ===========================
+
+    const parametrosAdmin =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const idEncontroGerenciar =
+      Number(
+        parametrosAdmin.get("encontro")
+      );
+
+    if (idEncontroGerenciar) {
+      const encontroGerenciado =
+        encontros.find(
+          (encontro) =>
+            encontro.id ===
+            idEncontroGerenciar
+        );
+
+      if (!encontroGerenciado) {
+        return (
+          <>
+            <BarraSuperior />
+
+            <main className="estado-pagina">
+              <div className="estado-erro">
+                <strong>
+                  Encontro não encontrado
+                </strong>
+
+                <p>
+                  O encontro informado
+                  não existe ou não está
+                  mais disponível.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.location.href =
+                      "/admin";
+                  }}
+                >
+                  Voltar
+                </button>
+              </div>
+            </main>
+          </>
+        );
+      }
+
+      const participantesGerenciados =
+        participantes.filter(
+          (participante) =>
+            participante.id_encontro ===
+            idEncontroGerenciar
+        );
+
+      const evidenciasGerenciadas =
+        evidencias.filter(
+          (evidencia) =>
+            evidencia.id_encontro ===
+            idEncontroGerenciar
+        );
+
+      return (
+        <>
+          <BarraSuperior />
+
+          <GerenciarEncontro
+            encontro={
+              encontroGerenciado
+            }
+            participantes={
+              participantesGerenciados
+            }
+            evidencias={
+              evidenciasGerenciadas
+            }
+            aoAtualizarDados={
+              carregarDados
+            }
+          />
+        </>
+      );
+    }
+
+    // ===========================
+    // ADMIN GERAL
+    // ===========================
+
+    return (
+      <>
+        <BarraSuperior />
+
+        <Admin
+          usuarioHub={usuarioHub}
+          encontros={encontros}
+          participantes={participantes}
+          aoAtualizarDados={
+            carregarDados
+          }
+        />
+      </>
+    );
+  }
+
+  // ===========================
+  // SEM ENCONTROS
+  // ===========================
+
+  if (encontros.length === 0) {
+    return (
+      <>
+        <BarraSuperior />
+
+        <main className="estado-pagina">
+          <div className="estado-vazio-dashboard">
+            <strong>
+              Nenhum encontro encontrado
+            </strong>
+
+            <p>
+              Cadastre pelo menos um
+              encontro para visualizar
+              o dashboard.
+            </p>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  // ===========================
+  // ENCONTRO SELECIONADO
+  // ===========================
+
+  const encontroSelecionado =
+    encontros.find(
+      (encontro) =>
+        encontro.id ===
+        idEncontroSelecionado
+    );
+
+  const dadosDoEncontro =
+    participantes.filter(
+      (participante) =>
+        participante.id_encontro ===
+        idEncontroSelecionado
+    );
+
+  const evidenciasDoEncontro =
+    evidencias.filter(
+      (evidencia) =>
+        evidencia.id_encontro ===
+        idEncontroSelecionado
+    );
+
+  // ===========================
+  // CABEÇALHO
+  // ===========================
+
+  const tituloEncontro =
+    encontroSelecionado?.titulo ??
+    "Encontro Presencial do Hub Fortaleza";
+
+  function formatarData(data) {
+    if (!data) {
+      return "Data não encontrada";
+    }
+
+    const [ano, mes, dia] =
+      data.split("-");
+
+    return `${dia}/${mes}/${ano}`;
+  }
 
   const dataEncontro =
-    dadosDoEncontro.length > 0
-      ? dadosDoEncontro[0].data_encontro
-      : "Data não encontrada";
+    formatarData(
+      encontroSelecionado?.data_encontro
+    );
+
+  const localEncontro =
+    encontroSelecionado?.local ??
+    "Local não informado";
+
+  // ===========================
+  // DASHBOARD
+  // ===========================
 
   return (
-    <main className="dashboard">
-      <header className="cabecalho-dashboard">
-        <h1>Encontro Presencial do Hub Fortaleza</h1>
-        <p>Data do encontro: {dataEncontro}</p>
-      </header>
+    <>
+      <BarraSuperior />
 
-      <section className="resumo-encontro">
-        <ListaParticipantes dados={dadosDoEncontro} />
+      <main className="dashboard">
 
-        <NumeroParticipantes
-          total={dadosDoEncontro.length}
+        <SeletorEncontro
+          encontros={encontros}
+          idSelecionado={
+            idEncontroSelecionado
+          }
+          aoSelecionar={
+            setIdEncontroSelecionado
+          }
         />
-      </section>
 
-      <section className="perfil-participantes">
-        <h2 className="titulo-secao">
-          Perfil dos participantes
-        </h2>
+        <header className="cabecalho-dashboard">
+          <h1>
+            {tituloEncontro}
+          </h1>
 
-        <div className="grade-perfil">
-          <Genero dados={dadosDoEncontro} />
+          <p>
+            {dataEncontro}
+            {" · "}
+            {localEncontro}
+          </p>
+        </header>
 
-          <Raca dados={dadosDoEncontro} />
+        <section className="resumo-encontro">
 
-          <FaixaEtaria dados={dadosDoEncontro} />
+          <ListaParticipantes
+            dados={dadosDoEncontro}
+          />
 
-          <Escolaridade dados={dadosDoEncontro} />
+          <NumeroParticipantes
+            total={
+              dadosDoEncontro.length
+            }
+          />
 
-          <Renda dados={dadosDoEncontro} />
+        </section>
 
-          <Deficiencia dados={dadosDoEncontro} />
+        <section className="perfil-participantes">
 
-          <AreaProfissional dados={dadosDoEncontro} />
+          <h2 className="titulo-secao">
+            Perfil dos participantes
+          </h2>
 
-          <VinculoProfissional dados={dadosDoEncontro} />
-        </div>
+          <div className="grade-perfil">
 
-      </section>
+            <Genero
+              dados={dadosDoEncontro}
+            />
 
-      <section className="dados-encontro">
-        <h2 className="titulo-secao">
-          Informações do encontro
-        </h2>
+            <Raca
+              dados={dadosDoEncontro}
+            />
 
-        <div className="linha-resumo-encontro">
-          <Gastos dados={dadosDoEncontro} />
+            <FaixaEtaria
+              dados={dadosDoEncontro}
+            />
 
-          <Transporte dados={dadosDoEncontro} />
-        </div>
+            <Escolaridade
+              dados={dadosDoEncontro}
+            />
 
-        <Bairros dados={dadosDoEncontro} />
-        <Evidencias evidencias={evidenciasDoEncontro} />
-      </section>
+            <Renda
+              dados={dadosDoEncontro}
+            />
 
-    </main>
+            <Deficiencia
+              dados={dadosDoEncontro}
+            />
+
+            <AreaProfissional
+              dados={dadosDoEncontro}
+            />
+
+            <VinculoProfissional
+              dados={dadosDoEncontro}
+            />
+
+          </div>
+
+        </section>
+
+        <section className="dados-encontro">
+
+          <h2 className="titulo-secao">
+            Informações do encontro
+          </h2>
+
+          <div className="linha-resumo-encontro">
+
+            <Gastos
+              dados={dadosDoEncontro}
+            />
+
+            <Transporte
+              dados={dadosDoEncontro}
+            />
+
+          </div>
+
+          <Bairros
+            dados={dadosDoEncontro}
+          />
+
+          <Evidencias
+            evidencias={
+              evidenciasDoEncontro
+            }
+          />
+
+        </section>
+
+      </main>
+    </>
   );
 }
 

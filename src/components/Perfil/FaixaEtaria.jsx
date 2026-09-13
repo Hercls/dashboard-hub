@@ -1,28 +1,22 @@
-import CardPerfilCategorias from "./CardPerfilCategorias";
-import { agruparCategorias } from "../../utils/agruparCategorias";
+import GraficoBarrasPerfil from "./GraficoBarrasPerfil";
+
+const ORDEM_FAIXA_ETARIA = [
+  "Até 17 anos",
+  "18–24",
+  "25–34",
+  "35–44",
+  "45–54",
+  "55–64",
+  "65+",
+];
 
 function FaixaEtaria({ dados }) {
-  const opcoesFaixaEtaria = [
-    "Até 17 anos",
-    "18–24",
-    "25–34",
-    "35–44",
-    "45–54",
-    "55–64",
-    "65+",
-  ];
-
-  const categorias = agruparCategorias(
-    dados,
-    "faixa_etaria",
-    opcoesFaixaEtaria
-  );
-
   return (
-    <CardPerfilCategorias
+    <GraficoBarrasPerfil
       titulo="Faixa etária"
-      categorias={categorias}
-      tipoGrafico="barras"
+      dados={dados}
+      campo="faixa_etaria"
+      ordem={ORDEM_FAIXA_ETARIA}
     />
   );
 }
